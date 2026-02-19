@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+      - postgres
+
+  market_data:
+    build: ./market_data
+    volumes:
+      - ./market_data:/app
+    depends_on:
+      - redis
+    environment:
+      - ANGEL_API_KEY=test
+      - ANGEL_CLIENT_ID=test
+      - ANGEL_PASSWORD=test
+
+  strategy_engine:
+    build: ./strategy_engine
+    volumes:
+      - ./strategy_engine:/app
+    depends_on:
+      - redis
+
+  ai_decision_layer:
+    build: ./ai_decision_layer
+    volumes:
+      - ./ai_decision_layer:/app
+    depends_on:
+      - redis
+
+  risk_management:
+    build: ./risk_management
+    volumes:
+      - ./risk_management:/app
+    depends_on:
+      - redis
+
+  execution_simulator:
+    build: ./execution_simulator
+    volumes:
+      - ./execution_simulator:/app
+    depends_on:
+      - redis
+
+  trade_journal:
+    build: ./trade_journal
+    volumes:
+      - ./trade_journal:/app
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: options_scalping
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
