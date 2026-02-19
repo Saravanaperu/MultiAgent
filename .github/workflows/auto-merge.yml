@@ -1,6 +1,6 @@
 name: Auto Merge
 on:
-  pull_request:
+  pull_request_target:
     types:
       - labeled
       - unlabeled
@@ -23,4 +23,8 @@ jobs:
         if: contains(github.event.pull_request.labels.*.name, 'automerge')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge --auto --merge "${{ github.event.pull_request.html_url }}"
+        run: |
+          echo "Attempting to enable auto-merge..."
+          gh pr merge --auto --merge "${{ github.event.pull_request.html_url }}" || \
+          gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}" || \
+          gh pr merge --auto --rebase "${{ github.event.pull_request.html_url }}"
