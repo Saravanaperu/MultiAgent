@@ -31,8 +31,8 @@ class RiskManager:
         risk_multiplier = float(redis_client.get('ai:risk_multiplier') or 1.0)
         logger.info(f"Applying AI Risk Multiplier: {risk_multiplier}")
 
-        # Adjust order size based on multiplier (simulated)
-        # order['quantity'] = int(order['quantity'] * risk_multiplier)
+        # Adjust order size based on multiplier
+        order['quantity'] = int(order['quantity'] * risk_multiplier)
 
         return True
 
