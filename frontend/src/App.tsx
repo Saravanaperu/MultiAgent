@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:8000'); // Assuming backend is on port 8000
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+const socket = io(backendUrl);
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
