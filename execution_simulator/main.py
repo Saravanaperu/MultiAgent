@@ -32,8 +32,16 @@ def execute_order(message):
         # Publish fill report
         redis_client.publish('orders:filled', json.dumps(fill_report))
 
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {e}")
+    except KeyError as e:
+        logger.error(f"Missing expected key: {e}")
+    except TypeError as e:
+        logger.error(f"Type error in order processing: {e}")
+    except redis.RedisError as e:
+        logger.error(f"Redis error: {e}")
     except Exception as e:
-        logger.error(f"Error executing order: {e}")
+        logger.error(f"Unexpected error executing order: {e}")
 
 def main():
     logger.info("Starting Execution Simulator...")
